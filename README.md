@@ -1,4 +1,4 @@
-# Metabased Sequencer Chain
+# Metabased Sequencer Chain Modules Workshop
 
 ## Overview
 

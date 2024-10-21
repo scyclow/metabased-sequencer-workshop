@@ -12,7 +12,7 @@
 
 - Explain the core components: MetabasedSequencerChain and RequireListManager
 - Discuss the concept of modules and their role in the protocol
-- Show the TokenBalanceSequencingModule as an example
+- Briefly show module example, explain deep dive happens later in the workshop
 
 ### III. Setting Up the Development Environment (10 minutes)
 
@@ -25,10 +25,10 @@
 - Explain the IsAllowed interface and its importance
 - Discuss how modules implement this interface
 
-### V. Show the example of the NFT-based Module (10 minutes)
+### V. Show module example - NFT-based Module (10 minutes)
 
 - Introduce the concept of an NFT-based sequencing module
-- Show the NFTOwnershipSequencingModule
+- Show `NFTOwnershipSequencingModule`
   - Show the constructor
   - Point to where the `isAllowed` function is called
   - Explain each step of the implementation
@@ -54,4 +54,4 @@
 ### Materials Needed:
 
 - Slides for the introduction and protocol overview
-- Pre-prepared code snippets for the live coding session
+- Pre-prepared code snippets such as script to deploy the module

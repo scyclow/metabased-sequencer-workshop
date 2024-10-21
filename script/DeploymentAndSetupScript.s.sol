@@ -6,14 +6,14 @@ import {Script, console} from "forge-std/Script.sol";
 
 // TODO: Implement the DeploymentAndSetupScript
 contract DeploymentAndSetupScript is Script {
-    // NFTOwnershipSequencingModule public NFTOwnershipSequencingModule;
+    // NFTOwnershipSequencingModule public module;
 
     function setUp() public {}
 
     function run() public {
         vm.startBroadcast();
 
-        // NFTOwnershipSequencingModule = new NFTOwnershipSequencingModule();
+        // NFTOwnershipSequencingModule = new module();
 
         vm.stopBroadcast();
     }
