@@ -14,7 +14,7 @@ import {IMetabasedSequencerChain} from "src/interfaces/IMetabasedSequencerChain.
  */
 contract NFTModuleDeploymentAndSetup is Script {
     // Constants for the deployment
-    address public constant FACTORY_ADDRESS = 0x9a0Ef1333681b357047282144dc06D7DAA1f76Ba;
+    address public constant FACTORY_ADDRESS = 0xfE0a902d5E3bEe35B7E0D0c10214D0b04947F974;
 
     // Contract instances
     IMetabasedFactory public factory;
@@ -25,6 +25,7 @@ contract NFTModuleDeploymentAndSetup is Script {
     uint256 public l3ChainId;
     address public nftAddress;
     uint256 public minimumNFTs;
+    address public admin;
 
     function setUp() public {
         console.log("====== Welcome to the Metabased L3 Chain Setup! ======");
@@ -34,6 +35,8 @@ contract NFTModuleDeploymentAndSetup is Script {
         l3ChainId = vm.envOr("L3_CHAIN_ID", uint256(31337)); // Default chain ID
         nftAddress = vm.envOr("NFT_ADDRESS", address(0x1234)); // Replace with your NFT address
         minimumNFTs = vm.envOr("MINIMUM_NFTS", uint256(1)); // Default to 1 NFT required
+
+        admin = vm.envOr("ADMIN_ADDRESS", msg.sender);
 
         console.log("====== Configuration Details ======");
         console.log("L3 Chain ID:", l3ChainId);
@@ -47,9 +50,7 @@ contract NFTModuleDeploymentAndSetup is Script {
     }
 
     function run() public {
-        // Get the deployer's address
-        address deployer = vm.addr(vm.envUint("PRIVATE_KEY"));
-        console.log("Deploying with address:", deployer);
+        console.log("Deploying with address:", msg.sender);
 
         vm.startBroadcast();
 
@@ -70,7 +71,7 @@ contract NFTModuleDeploymentAndSetup is Script {
         console.log(" 3 Creating new MetabasedSequencerChain...");
         console.log("Configuration:");
         console.log("- L3 Chain ID:", l3ChainId);
-        address sequencerChainAddress = factory.createMetabasedSequencerChain(l3ChainId);
+        address sequencerChainAddress = factory.createMetabasedSequencerChain(l3ChainId, admin);
         sequencerChain = IMetabasedSequencerChain(sequencerChainAddress);
         console.log("Sequencer Chain deployed at:", sequencerChainAddress);
 

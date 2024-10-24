@@ -2,7 +2,7 @@
 pragma solidity ^0.8.13;
 
 import {Script, console} from "forge-std/Script.sol";
-import {AllowlistSequencingModule} from "../src/AllowlistSequencingModule.sol";
+import {AllowlistSequencingModule} from "src/AllowlistSequencingModule.sol";
 import {IMetabasedFactory} from "src/interfaces/IMetabasedFactory.sol";
 import {IMetabasedSequencerChain} from "src/interfaces/IMetabasedSequencerChain.sol";
 
@@ -14,7 +14,7 @@ import {IMetabasedSequencerChain} from "src/interfaces/IMetabasedSequencerChain.
  */
 contract AllowlistModuleDeploymentAndSetup is Script {
     // Constants for the deployment
-    address public constant FACTORY_ADDRESS = 0x9a0Ef1333681b357047282144dc06D7DAA1f76Ba;
+    address public constant FACTORY_ADDRESS = 0xfE0a902d5E3bEe35B7E0D0c10214D0b04947F974;
 
     // Contract instances
     IMetabasedFactory public factory;
@@ -49,8 +49,7 @@ contract AllowlistModuleDeploymentAndSetup is Script {
     }
 
     function run() public {
-        address deployer = vm.addr(vm.envUint("PRIVATE_KEY"));
-        console.log("Deploying with address:", deployer);
+        console.log("Deploying with address:", msg.sender);
 
         vm.startBroadcast();
 
@@ -70,13 +69,13 @@ contract AllowlistModuleDeploymentAndSetup is Script {
         console.log("STEP 3: Creating new MetabasedSequencerChain...");
         console.log("Configuration:");
         console.log("   - L3 Chain ID:", l3ChainId);
-        address sequencerChainAddress = factory.createMetabasedSequencerChain(l3ChainId);
+        address sequencerChainAddress = factory.createMetabasedSequencerChain(l3ChainId, admin);
         sequencerChain = IMetabasedSequencerChain(sequencerChainAddress);
         console.log("SUCCESS: Sequencer Chain deployed at:", sequencerChainAddress);
 
         // Step 4: Add the allowlist module to the sequencer chain
         console.log("STEP 4: Adding allowlist module to the chain's permission system...");
-        sequencerChain.addRequireAnyCheck(address(allowlistModule), true);
+        sequencerChain.addRequireAnyCheck(address(allowlistModule), false);
         console.log("SUCCESS: Allowlist module added to permissions!");
 
         // Step 5: Add initial allowed users if any
