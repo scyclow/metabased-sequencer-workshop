@@ -1,4 +1,4 @@
-# Metabased Sequencer Chain
+# Metabased Sequencer Chain Modules Workshop
 
 ## Overview
 
@@ -34,9 +34,16 @@ The Metabased Sequencer Chain is a modular protocol for sequencing transactions 
    ```
 
 3. Build the project:
+
    ```
    forge build
    ```
+
+4. copy `.env.example` to `.env` and fill in the required values.
+
+```
+cp .env.example .env
+```
 
 ## Creating a New Module
 
@@ -76,3 +83,19 @@ The Metabased Sequencer Chain is a modular protocol for sequencing transactions 
    ```
 
 4. After deployment, add the module's address to the RequireListManager using the `addRequireAllCheck` or `addRequireAnyCheck` function, depending on your requirements.
+
+## Using the Deployment scripts
+
+In the workshop, we will use a fork of Metabased Testnet so you don't need to have ETH to deploy the contracts. The deployment scripts can be found `/script` folder.
+
+Forking the Metabased Testnet:
+
+```
+make fork-metabased-testnet
+```
+
+Running the script in fork mode
+
+```
+make fork-allowlist-module-deploy-and-run
+```
