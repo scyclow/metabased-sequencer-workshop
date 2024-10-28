@@ -1,0 +1,16 @@
+version: '3.8'
+services:
+  metabased-dev:
+    build: .
+    volumes:
+      - .:/app
+      - foundry_cache:/root/.foundry
+      - git_cache:/root/.git
+    environment:
+      - FOUNDRY_PROFILE=default
+    tty: true
+    stdin_open: true
+
+volumes:
+  foundry_cache:
+  git_cache:

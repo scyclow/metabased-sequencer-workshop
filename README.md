@@ -12,7 +12,92 @@ The Metabased Sequencer Chain is a modular protocol for sequencing transactions 
 
 ## Getting Started
 
-### Prerequisites
+### With Docker
+
+1. Install Docker Desktop:
+
+   - [Windows](https://docs.docker.com/desktop/install/windows-install/)
+   - [Mac](https://docs.docker.com/desktop/install/mac-install/)
+   - [Linux](https://docs.docker.com/desktop/install/linux-install/)
+
+2. Install Git:
+   - [All platforms](https://git-scm.com/downloads)
+
+#### Setup Instructions
+
+1. Clone the repository:
+
+   ```bash
+   git clone https://github.com/SyndicateProtocol/metabased-sequencer-chain-sc-modules-workshop.git
+   cd metabased-sequencer-chain-sc-modules-workshop
+   ```
+
+2. Build and start the container:
+
+   ```bash
+   docker compose up -d
+   ```
+
+3. Enter the container:
+
+   ```bash
+   docker compose exec metabased-dev bash
+   ```
+
+4. Verify the installation:
+
+   ```bash
+   # Inside the container
+   forge --version
+   cast --version
+   anvil --version
+   ```
+
+5. copy `.env.example` to `.env` and fill in the required values.
+
+```
+cp .env.example .env
+```
+
+#### Stopping the Environment
+
+To stop the container:
+
+```bash
+docker compose down
+```
+
+To stop and remove all associated volumes:
+
+```bash
+docker compose down -v
+```
+
+#### Troubleshooting
+
+1. If you get permission errors:
+
+   ```bash
+   # On Linux/Mac, you might need to run
+   sudo chown -R $USER:$USER .
+   ```
+
+2. If the build fails:
+
+   ```bash
+   # Clean and rebuild
+   docker compose down -v
+   docker compose build --no-cache
+   docker compose up -d
+   ```
+
+3. If Foundry commands aren't working:
+   ```bash
+   # Inside the container
+   foundryup
+   ```
+
+### Using the Development Environment
 
 - Git
 - [Foundry](https://book.getfoundry.sh/getting-started/installation)
@@ -70,19 +155,12 @@ cp .env.example .env
    forge build
    ```
 
-2. Run tests (if you've written tests for your module):
+2. Deploy the module (replace `YourNewModule` with your contract name):
 
-   ```
-   forge test
-   ```
+3. Copy and script file to the `scripts` directory. Use one of the existing scripts as a template.
 
-3. Deploy the module (replace `YourNewModule` with your contract name):
+4. add a command to the `Makefile` to run your script. Use the section below as example.
 
-   ```
-   forge create --rpc-url <your_rpc_url> --private-key <your_private_key> src/modules/YourNewModule.sol:YourNewModule --constructor-args <arg1> <arg2>
-   ```
-
-4. After deployment, add the module's address to the RequireListManager using the `addRequireAllCheck` or `addRequireAnyCheck` function, depending on your requirements.
 
 ## Using the Deployment scripts
 
