@@ -7,8 +7,11 @@
 - Welcome participants and introduce yourself
 - Briefly explain the Metabased Sequencer Chain protocol from Smart Contract Perpective
 - Overview of the workshop objectives
+  -- Understand that the created a chain from a smart contract
+  -- they can customize the chain behavior via modules
+  -- they will understand the tx flow in this new paradigm.
 
-### II. Protocol Overview (10 minutes)
+### II. Protocol Overview (10 minutes) Gus
 
 - Explain the core components: MetabasedSequencerChain and RequireListManager
 - Discuss the concept of modules and their role in the protocol
@@ -16,7 +19,9 @@
 
 ### III. Setting Up the Development Environment (10 minutes)
 
-- Ensure all participants have Git and Foundry installed
+- Ensure all participants have Git and Foundry installed - (Docker container for faster installation)
+ TODO: create a video of the docker installation so participants have it before the workshop
+ Also do on the day LIVE so they can see the process
 - Clone the protocol repository
 - Walk through the project structure
 
@@ -53,5 +58,12 @@
 
 ### Materials Needed:
 
-- Slides for the introduction and protocol overview
+- Slides for the introduction and protocol overview (create visuals how the modules connect with the sequencers in the L3 chains) - Sheldon will create
+
+- Show the steps how to create the core contract for the L3 and how to connect the module and send the tx. Make them see the "magic" of the process.
+
+- Add fake txs on a loop to show the sequencer in action
+  -- Example: The txs that will meet the criterion of the module.
+  A batch of txs that will not meet the criterion of the module
+
 - Pre-prepared code snippets such as script to deploy the module
