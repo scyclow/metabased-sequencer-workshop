@@ -22,7 +22,7 @@
 
     "forwardPorts": [8545],
 
-    "postCreateCommand": "git config --global --add safe.directory /workspace && forge install",
+    "postCreateCommand": "git config --global --add safe.directory /workspace && forge install && cp -n .env.example .env || true",
 
     "remoteUser": "vscode",
 

@@ -14,7 +14,7 @@ import {IMetabasedSequencerChain} from "src/interfaces/IMetabasedSequencerChain.
  */
 contract NFTModuleDeploymentAndSetup is Script {
     // Constants for the deployment
-    address public constant FACTORY_ADDRESS = 0xfE0a902d5E3bEe35B7E0D0c10214D0b04947F974;
+    address public constant FACTORY_ADDRESS = 0x9a0Ef1333681b357047282144dc06D7DAA1f76Ba;
 
     // Contract instances
     IMetabasedFactory public factory;

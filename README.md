@@ -46,11 +46,6 @@ The easiest way to get started is using VS Code's Dev Containers. This approach 
 
 4. Wait for the container to build. This might take a few minutes the first time.
 
-5. Copy `.env.example` to `.env` and fill in the required values:
-   ```bash
-   cp .env.example .env
-   ```
-
 #### Verifying the Setup
 
 Once inside the dev container, open a terminal in VS Code (`Ctrl + ` ` or View -> Terminal) and run:
