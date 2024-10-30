@@ -5,6 +5,7 @@ import {Script, console} from "forge-std/Script.sol";
 import {NFTOwnershipSequencingModule} from "src/NFTOwnershipSequencingModule.sol";
 import {IMetabasedFactory} from "src/interfaces/IMetabasedFactory.sol";
 import {IMetabasedSequencerChain} from "src/interfaces/IMetabasedSequencerChain.sol";
+import {IERC721} from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 
 /**
  * @title NFTModuleDeploymentAndSetup
@@ -104,15 +105,91 @@ contract NFTModuleDeploymentAndSetup is Script {
 
         vm.stopBroadcast();
 
-        // User instructions
-        console.log(" What's Next?");
-        console.log("1. Your L3 chain is ready for use!");
-        console.log("2. Only addresses holding", minimumNFTs);
-        console.log("or more NFTs from", nftAddress, "can sequence transactions");
-        console.log("3. Test your setup by trying to sequence a transaction");
-        console.log(" Important Addresses (save these):");
-        console.log("- Sequencer Chain:", address(sequencerChain));
-        console.log("- NFT Module:", address(nftModule));
-        console.log(" Deployment complete! Happy sequencing! ");
+        // Interactive Demo Section
+        console.log("\n=== Starting Interactive Demo ===");
+        console.log("We'll simulate some transactions to demonstrate how NFT-based sequencing works\n");
+
+        // Create test addresses and mint NFTs for demonstration
+        address nftHolder = makeAddr("nftHolder");
+        address nonHolder = makeAddr("nonHolder");
+        address insufficientHolder = makeAddr("insufficientHolder");
+
+        console.log("Test Addresses:");
+        console.log("- NFT Holder (has required NFTs):", nftHolder);
+        console.log("- Insufficient Holder (has some NFTs):", insufficientHolder);
+        console.log("- Non Holder (has no NFTs):", nonHolder);
+
+        // Mock NFT balances for demonstration
+        vm.mockCall(nftAddress, abi.encodeWithSelector(IERC721.balanceOf.selector, nftHolder), abi.encode(minimumNFTs));
+        vm.mockCall(
+            nftAddress,
+            abi.encodeWithSelector(IERC721.balanceOf.selector, insufficientHolder),
+            abi.encode(minimumNFTs - 1)
+        );
+        vm.mockCall(nftAddress, abi.encodeWithSelector(IERC721.balanceOf.selector, nonHolder), abi.encode(0));
+
+        // Demonstration of successful transactions
+        console.log("\n=== Demonstrating Successful Transactions ===");
+        console.log("Sending 3 transactions from address with enough NFTs...\n");
+
+        vm.startPrank(nftHolder);
+        bytes[] memory validTxs = new bytes[](3);
+        for (uint256 i = 0; i < 3; i++) {
+            validTxs[i] = abi.encode(string(abi.encodePacked("Transaction #", vm.toString(i + 1))));
+
+            console.log("Sending Transaction #", i + 1);
+            try sequencerChain.processTransaction(validTxs[i]) {
+                console.log("[SUCCESS] Transaction accepted!");
+                console.log("NFT Balance:", minimumNFTs);
+                console.log("Required:", minimumNFTs);
+            } catch {
+                console.log("[ERROR] Transaction failed! (Unexpected)");
+            }
+            console.log("");
+        }
+        vm.stopPrank();
+
+        // Demonstration with insufficient NFTs
+        console.log("\n=== Demonstrating Transactions with Insufficient NFTs ===");
+        console.log("Trying to send transaction from address with insufficient NFTs...\n");
+
+        vm.startPrank(insufficientHolder);
+        bytes memory insufficientTx = abi.encode("Insufficient NFTs Transaction");
+        console.log("Attempting transaction from insufficient holder");
+        try sequencerChain.processTransaction(insufficientTx) {
+            console.log("[ERROR] Transaction went through! (This shouldn't happen)");
+        } catch {
+            console.log("[EXPECTED] Transaction blocked!");
+            console.log("NFT Balance:", minimumNFTs - 1);
+            console.log("Required:", minimumNFTs);
+        }
+        vm.stopPrank();
+
+        // Demonstration with no NFTs
+        console.log("\n=== Demonstrating Transactions with No NFTs ===");
+        console.log("Trying to send transaction from address with no NFTs...\n");
+
+        vm.startPrank(nonHolder);
+        bytes memory noNftsTx = abi.encode("No NFTs Transaction");
+        console.log("Attempting transaction from non-holder");
+        try sequencerChain.processTransaction(noNftsTx) {
+            console.log("[ERROR] Transaction went through! (This shouldn't happen)");
+        } catch {
+            console.log("[EXPECTED] Transaction blocked!");
+            console.log("NFT Balance: 0 Required:", minimumNFTs);
+        }
+        vm.stopPrank();
+
+        console.log("\n=== Demo Key Takeaways ===");
+        console.log("1. Addresses must hold at least", minimumNFTs, "NFTs to sequence transactions");
+        console.log("2. Holding insufficient NFTs results in transaction rejection");
+        console.log("3. NFT balance is checked in real-time for each transaction");
+
+        console.log("\n=== Try it yourself ===");
+        console.log("1. Required NFT Contract:", nftAddress);
+        console.log("2. Minimum NFTs Required:", minimumNFTs);
+        console.log("3. Submit transactions: sequencerChain.processTransaction(bytes)");
+
+        console.log("\n=== Demo Complete! ===");
     }
 }
