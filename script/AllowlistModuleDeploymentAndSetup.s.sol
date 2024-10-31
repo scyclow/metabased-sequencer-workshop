@@ -14,7 +14,7 @@ import {IMetabasedSequencerChain} from "src/interfaces/IMetabasedSequencerChain.
  */
 contract AllowlistModuleDeploymentAndSetup is Script {
     // Constants for the deployment
-    address public constant FACTORY_ADDRESS = 0xfE0a902d5E3bEe35B7E0D0c10214D0b04947F974;
+    address public constant FACTORY_ADDRESS = 0x9a0Ef1333681b357047282144dc06D7DAA1f76Ba;
 
     // Contract instances
     IMetabasedFactory public factory;
@@ -111,20 +111,80 @@ contract AllowlistModuleDeploymentAndSetup is Script {
 
         vm.stopBroadcast();
 
-        // User instructions
-        console.log("====== Next Steps ======");
-        console.log("1. Your L3 chain is ready for use!");
-        console.log("2. Only addresses in the allowlist can sequence transactions");
-        console.log("3. The admin can add/remove addresses using:");
-        console.log("   - addToAllowlist(address)");
-        console.log("   - removeFromAllowlist(address)");
-        console.log("Important Addresses (save these):");
-        console.log("- Sequencer Chain:", address(sequencerChain));
-        console.log("- Allowlist Module:", address(allowlistModule));
-        console.log("Admin Functions:");
-        console.log("- Add user:    allowlistModule.addToAllowlist(address)");
-        console.log("- Remove user: allowlistModule.removeFromAllowlist(address)");
-        console.log("- Transfer admin: allowlistModule.transferAdmin(address)");
-        console.log("Deployment complete! Happy sequencing!");
+        // Interactive Demo Section
+        console.log("\n=== Starting Interactive Demo ===");
+        console.log("We'll simulate some transactions to demonstrate how the allowlist works\n");
+
+        // Create some test addresses
+        address allowedUser = admin; // Already in allowlist
+        address randomUser = address(0x678);
+
+        console.log("Test Addresses:");
+        console.log("- Allowed User:", allowedUser);
+        console.log("- Random User:", randomUser);
+
+        // Demonstration of successful transactions
+        console.log("\n=== Demonstrating Successful Transactions ===");
+        console.log("Sending 5 transactions from allowed address...\n");
+
+        vm.startPrank(admin);
+
+        bytes[] memory validTxs = new bytes[](5);
+        for (uint256 i = 0; i < 5; i++) {
+            validTxs[i] = abi.encode(string(abi.encodePacked("Transaction #", vm.toString(i + 1))));
+
+            console.log("Sending Transaction #", i + 1);
+            try sequencerChain.processTransaction(validTxs[i]) {
+                console.log("[SUCCESS] Transaction accepted!");
+            } catch {
+                console.log("[ERROR] Transaction failed! (Unexpected)");
+            }
+            console.log("");
+        }
+
+        vm.stopPrank();
+
+        // Demonstration of failed transactions
+        console.log("\n=== Demonstrating Failed Transactions ===");
+        console.log("Trying to send 2 transactions from unauthorized address...\n");
+
+        vm.startPrank(randomUser);
+        bytes[] memory invalidTxs = new bytes[](2);
+        for (uint256 i = 0; i < 2; i++) {
+            invalidTxs[i] = abi.encode(string(abi.encodePacked("Unauthorized Transaction #", vm.toString(i + 1))));
+
+            console.log("Attempting Transaction #", i + 1, "from unauthorized address");
+            try sequencerChain.processTransaction(invalidTxs[i]) {
+                console.log("[ERROR] Transaction went through! (This shouldn't happen)");
+            } catch {
+                console.log("[EXPECTED] Transaction blocked!");
+                console.log("          Reason: Address not in allowlist");
+            }
+            console.log("");
+        }
+        vm.stopPrank();
+
+        vm.startPrank(admin);
+        // Let's add the random user to allowlist and try again
+        console.log("\n=== Adding previously unauthorized user to allowlist ===");
+        allowlistModule.addToAllowlist(randomUser);
+
+        vm.stopPrank();
+
+        vm.startPrank(randomUser);
+        console.log("\n=== Trying one more time with newly authorized user ===");
+        try sequencerChain.processTransaction(invalidTxs[0]) {
+            console.log("[SUCCESS] Transaction accepted after being added to allowlist!");
+        } catch {
+            console.log("[ERROR] Transaction failed! (Unexpected)");
+        }
+        vm.stopPrank();
+
+        console.log("\n=== Demo Key Takeaways ===");
+        console.log("1. Only addresses in the allowlist can submit transactions");
+        console.log("2. Unauthorized attempts are automatically rejected");
+        console.log("3. Adding an address to allowlist immediately grants sequencing permissions");
+
+        console.log("\n=== Demo Complete! ===");
     }
 }

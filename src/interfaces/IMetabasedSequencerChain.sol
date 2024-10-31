@@ -5,4 +5,5 @@ interface IMetabasedSequencerChain {
     function l3ChainId() external view returns (uint256);
     function getAllRequirements(bool isRequired) external view returns (address[] memory);
     function addRequireAnyCheck(address module, bool isRequired) external;
+    function processTransaction(bytes calldata encodedTxn) external;
 }

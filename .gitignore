@@ -12,3 +12,9 @@ docs/
 
 # Dotenv file
 .env
+
+
+# Docker
+.docker/
+docker-compose.override.yml
+
