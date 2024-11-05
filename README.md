@@ -4,6 +4,11 @@
 
 The Metabased Sequencer Chain is a modular protocol for sequencing transactions in Layer 3 chains. It uses a flexible system of modules to determine who is allowed to sequence transactions.
 
+## Workshop Materials
+
+[Presentation Slides](https://docs.google.com/presentation/d/12DPGjNLnt8-2cwz9Xc3aQh0RJn006e4iCicZmUAPus0/)
+[Setup Video](https://www.youtube.com/watch?v=tekZZUSh3Cc)
+
 ## Key Components
 
 1. **MetabasedSequencerChain**: The core contract for sequencing transactions.
@@ -92,6 +97,55 @@ forge build
 4. If you see permission issues:
    - Make sure Docker Desktop is running
    - Try running Docker Desktop with administrator privileges
+
+## Creating a New Module
+
+1. Create a new Solidity file in the `src/modules` directory.
+2. Implement the `IsAllowed` interface:
+
+   ```solidity
+   import {IsAllowed} from "src/interfaces/IsAllowed.sol";
+
+   contract YourNewModule is IsAllowed {
+       function isAllowed(address proposer) external view override returns (bool) {
+           // Your logic here
+       }
+   }
+   ```
+
+3. Implement your custom logic in the `isAllowed` function.
+
+## Building and Deploying a Module
+
+1. Build the module:
+
+   ```
+   forge build
+   ```
+
+2. Deploy the module (replace `YourNewModule` with your contract name):
+
+3. Copy and script file to the `scripts` directory. Use one of the existing scripts as a template.
+
+4. add a command to the `Makefile` to run your script. Use the section below as example.
+
+## Using the Deployment scripts
+
+In the workshop, we will use a fork of Metabased Testnet so you don't need to have ETH to deploy the contracts. The deployment scripts can be found `/script` folder.
+
+Forking the Metabased Testnet:
+
+```
+make fork-metabased-testnet
+```
+
+Running the script in fork mode
+
+```
+make fork-allowlist-module-deploy-and-run
+```
+
+## Advanced Topic - Other Options For Getting Started
 
 ### With Raw DockerFile (Medium Difficulty)
 
@@ -220,51 +274,4 @@ docker compose down -v
 
 ```
 cp .env.example .env
-```
-
-## Creating a New Module
-
-1. Create a new Solidity file in the `src/modules` directory.
-2. Implement the `IsAllowed` interface:
-
-   ```solidity
-   import {IsAllowed} from "src/interfaces/IsAllowed.sol";
-
-   contract YourNewModule is IsAllowed {
-       function isAllowed(address proposer) external view override returns (bool) {
-           // Your logic here
-       }
-   }
-   ```
-
-3. Implement your custom logic in the `isAllowed` function.
-
-## Building and Deploying a Module
-
-1. Build the module:
-
-   ```
-   forge build
-   ```
-
-2. Deploy the module (replace `YourNewModule` with your contract name):
-
-3. Copy and script file to the `scripts` directory. Use one of the existing scripts as a template.
-
-4. add a command to the `Makefile` to run your script. Use the section below as example.
-
-## Using the Deployment scripts
-
-In the workshop, we will use a fork of Metabased Testnet so you don't need to have ETH to deploy the contracts. The deployment scripts can be found `/script` folder.
-
-Forking the Metabased Testnet:
-
-```
-make fork-metabased-testnet
-```
-
-Running the script in fork mode
-
-```
-make fork-allowlist-module-deploy-and-run
 ```
