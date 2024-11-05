@@ -7,6 +7,7 @@ The Metabased Sequencer Chain is a modular protocol for sequencing transactions 
 ## Workshop Materials
 
 [Presentation Slides](https://docs.google.com/presentation/d/12DPGjNLnt8-2cwz9Xc3aQh0RJn006e4iCicZmUAPus0/)
+
 [Setup Video](https://www.youtube.com/watch?v=tekZZUSh3Cc)
 
 ## Key Components
